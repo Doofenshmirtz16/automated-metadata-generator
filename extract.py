@@ -4,7 +4,7 @@ import docx
 from pdf2image import convert_from_path
 import pytesseract
 from PIL import Image
-from odf.opendocument import load
+from odf import opendocument
 from odf.text import P
 from bs4 import BeautifulSoup
 from striprtf.striprtf import rtf_to_text
@@ -38,7 +38,7 @@ def extract_text_from_image(file_path):
 
 def extract_from_odt(file_path):
     text = ""
-    doc = load(file_path)
+    doc = opendocument.load(file_path)
     for paragraph in doc.getElementsByType(P):
         text += paragraph.firstChild.data if paragraph.firstChild else ""
         text += "\n"
