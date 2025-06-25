@@ -103,6 +103,8 @@ No setup needed — just open the web app link.
 ```
 jupyter notebook notebook.ipynb
 ```
+(Change the notebook name in your local computer as "notebook" and then run.)
+
 Useful for exploring the pipeline, debugging, or submitting in academic settings.
 
 ---
@@ -136,6 +138,7 @@ Useful for exploring the pipeline, debugging, or submitting in academic settings
   "detected_date": "23 Jun 2025"
 }
 ```
+### Please remember that we have set the limit on the number of values for each features so that it is easy for interpretation. If you want, you can easily extend the limits in metadata.py from finite to 'None' to include all.
 
 ---
 
