@@ -1,0 +1,9 @@
+streamlit
+python-docx
+pytesseract
+pdf2image
+PyMuPDF
+spacy
+yake
+transformers
+torch
