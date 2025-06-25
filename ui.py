@@ -81,7 +81,9 @@ if uploaded_file is not None:
 
             for key, value in metadata.items():
                 st.markdown(f"**🔹 {key.replace('_', ' ').title()}**")
-                if isinstance(value, list):
+                if isinstance(value, dict):
+                    st.dataframe(pd.DataFrame(value.items(), columns=["Label", "Score"]))
+                elif isinstance(value, list):
                     st.markdown(", ".join(value))
                 else:
                     st.markdown(value)
