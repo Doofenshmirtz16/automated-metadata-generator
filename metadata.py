@@ -17,15 +17,15 @@ def extract_title(text: str) -> str:
             return line
     return "Untitled Document"
 
-def extract_summary(text: str, max_chars: int = 1024) -> str:
+def extract_summary(text: str, max_chars: int = 2048) -> str:
     """
     Generate a short summary using a transformer model.
     """
     short_text = text[:max_chars]
-    result = summarizer(short_text, max_length=130, min_length=30, do_sample=False)
+    result = summarizer(short_text, max_length=250, min_length=60, do_sample=False)
     return result[0]['summary_text']
 
-def extract_keywords(text: str, top_n: int = 5) -> list:
+def extract_keywords(text: str, top_n: int = 15) -> list:
     """
     Use KeyBERT to extract important keywords.
     """
@@ -50,25 +50,30 @@ def detect_document_type(text: str) -> str:
         "report", "general document"
     ]
     result = classifier(text[:1024], candidate_labels)
-    return result["labels"][0]
+    return {label: score for label, score in zip(result["labels"], result["scores"])}
 
-def generate_metadata(text: str) -> dict:
-    """
-    Generate all metadata fields from raw extracted text.
-    """
+def generate_metadata(text):
     if not text.strip():
         return {
             "title": "No content",
-            "summary": "No summary generated.",
+            "summary": "",
             "keywords": [],
-            "document_type": "Unknown",
+            "keyword_scores": {},
+            "document_type_scores": {},
             "detected_date": "Not found"
         }
 
+    title = extract_title(text)
+    summary = extract_summary(text)
+    keywords = extract_keywords(text, top_n=15)
+    date = extract_date(text)
+    doc_type_scores = detect_document_type(text)
+
     return {
-        "title": extract_title(text),
-        "summary": extract_summary(text),
-        "keywords": extract_keywords(text),
-        "document_type": detect_document_type(text),
-        "detected_date": extract_date(text)
+        "title": title,
+        "summary": summary,
+        "keywords": list(doc_type_scores.keys())[:1],  # for backward compatibility
+        "keyword_scores": {kw: round(score, 3) for kw, score in kw_model.extract_keywords(text, top_n=15)},
+        "document_type_scores": doc_type_scores,
+        "detected_date": date
     }
